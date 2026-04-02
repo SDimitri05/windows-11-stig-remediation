@@ -96,20 +96,58 @@ Some later groups from the broader roadmap were intentionally not completed here
 - **WN11-CC-000005** — Camera access from the lock screen must be disabled
 - **WN11-CC-000010** — Lock screen slide shows must be disabled
 
-### 3) Windows Firewall (Implemented with Operational Impact)
+### 3) Windows Firewall (Implemented, Tested, and Rolled Back)
+
 - **WN11-00-000135** — Host-based firewall must be installed and enabled
 
-This control was successfully implemented using PowerShell.
+This control was implemented using PowerShell and validated through:
 
-However, after enabling the firewall:
+- Verify mode (baseline state)
+- Apply mode (firewall enabled)
+- Rollback mode (firewall disabled)
 
-- Tenable scans completed
-- The **Audits / Compliance tab disappeared**
+### Observed Behavior
+
+After enabling Windows Firewall:
+
+- Tenable scans still executed successfully
+- However, the **Audits / Compliance tab disappeared**
 - Scan duration dropped significantly
 
-This indicates that authenticated compliance checks were likely impacted by firewall restrictions.
+This indicated that **authenticated compliance checks were not fully executing**.
 
-The remediation itself is technically valid, but requires additional tuning to preserve full scan visibility.
+### Investigation
+
+Additional firewall rule allowances were introduced for:
+
+- Windows Management Instrumentation (WMI)
+- File and Printer Sharing (SMB)
+- Remote Event Log Management
+
+Despite these adjustments, the issue persisted.
+
+### Decision
+
+The firewall configuration was **rolled back to its original state** (disabled) in order to:
+
+- restore authenticated scan visibility
+- maintain consistent validation across remaining STIGs
+
+### Outcome
+
+- Remediation was technically implemented and tested
+- Operational impact was identified and analyzed
+- Control was intentionally deferred after rollback
+
+### Why this matters
+
+This scenario demonstrates a real-world security engineering challenge:
+
+- Applying a control can impact monitoring and validation systems
+- Security must be balanced with operational visibility
+- Remediation decisions sometimes require rollback and reassessment
+
+This is representative of real enterprise environments where controls must be tuned rather than blindly enforced.
 
 ### 4) SMBv1 Hardening (Indirect Remediation)
 - **WN11-00-000160** — SMBv1 must be disabled on the system
@@ -245,34 +283,51 @@ This is part of what made the project valuable as a real-world hardening exercis
 
 ## Known Issue
 
-### Windows Firewall STIG
+### Windows Firewall STIG (WN11-00-000135)
 
-After enabling Windows Firewall:
+During implementation of the Windows Firewall STIG:
 
-- Scan execution still succeeded
+- Firewall was successfully enabled via PowerShell
+- Scan execution completed successfully
 - However, the **Audits / Compliance tab disappeared**
 - Scan duration dropped significantly (~6 minutes)
 
 ### Analysis
 
-This behavior suggests:
+This behavior suggests that authenticated scanning was disrupted, likely due to firewall restrictions impacting:
 
-- Authenticated scanning did not fully execute
-- Likely due to firewall restrictions affecting:
-  - SMB / RPC / WMI communication
-  - Credential-based compliance checks
+- WMI (Windows Management Instrumentation)
+- SMB / RPC communication
+- Remote event log access
+- Credential-based compliance checks
+
+### Mitigation Attempt
+
+Firewall rules were adjusted to allow:
+
+- WMI traffic
+- File and Printer Sharing
+- Remote Event Log Management
+
+Despite these changes, authenticated scan visibility was not restored.
+
+### Final Action
+
+The system was rolled back to its original state (firewall disabled) to:
+
+- restore full scan functionality
+- ensure accurate validation of remaining STIGs
 
 ### Conclusion
 
-- The STIG remediation is **technically correct** and **successfully applied**
-- The issue lies in **scanner communication constraints**
-- Additional rule tuning would be required in a real environment
+- The STIG remediation is technically valid
+- The issue highlights **interaction between security controls and scanning tools**
+- Additional rule tuning would be required in a production environment
 
 ### Status
 
-- Control implemented
-- Behavior documented
-- Further tuning deferred
+- Implemented → Tested → Investigated → Rolled back
+- Deferred for future refinement
 
 ---
 
@@ -286,8 +341,11 @@ Recommended evidence categories for this repository:
 - before/after service state
 
 ### Windows Firewall
-- PowerShell script (Apply output)
-- No compliance screenshots due to audit visibility issue
+- Verify mode output (baseline state)
+- Apply mode output (firewall enabled)
+- Rollback mode output (firewall disabled)
+- Firewall state verification (enabled vs disabled)
+- No compliance screenshots due to authenticated scan disruption
 
 ### Lock Screen Hardening
 - `WN11-CC-000010` failed screenshot
