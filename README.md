@@ -75,10 +75,13 @@ This repository focuses on the remediation groups that were actively worked on a
 
 - **Secondary Logon Service**
 - **Lock Screen Hardening**
-- **Windows Firewall**
-- **SMBv1 Hardening**
 - **Account Lockout Policy**
 - **Password Policy**
+
+Additionally:
+
+- **SMBv1-related STIGs** were resolved indirectly after other remediations
+- **Windows Firewall STIG (WN11-00-000135 — Host-based firewall must be installed and enabled)** was intentionally deferred due to its impact on authenticated scanning behavior
 
 Some later groups from the broader roadmap were intentionally not completed here because the project requirement had already been met and exceeded.
 
@@ -93,13 +96,33 @@ Some later groups from the broader roadmap were intentionally not completed here
 - **WN11-CC-000005** — Camera access from the lock screen must be disabled
 - **WN11-CC-000010** — Lock screen slide shows must be disabled
 
-### 3) Windows Firewall
+### 3) Windows Firewall (Implemented with Operational Impact)
 - **WN11-00-000135** — Host-based firewall must be installed and enabled
 
-### 4) SMBv1 Hardening
+This control was successfully implemented using PowerShell.
+
+However, after enabling the firewall:
+
+- Tenable scans completed
+- The **Audits / Compliance tab disappeared**
+- Scan duration dropped significantly
+
+This indicates that authenticated compliance checks were likely impacted by firewall restrictions.
+
+The remediation itself is technically valid, but requires additional tuning to preserve full scan visibility.
+
+### 4) SMBv1 Hardening (Indirect Remediation)
 - **WN11-00-000160** — SMBv1 must be disabled on the system
 - **WN11-00-000165** — SMBv1 must be disabled on the SMB server
 - **WN11-00-000170** — SMBv1 must be disabled on the SMB client
+
+These STIGs were not directly remediated with a dedicated script.
+
+They transitioned to a compliant state **indirectly** after the remediation of:
+
+- **WN11-00-000175 (Secondary Logon Service)**
+
+This behavior highlights how certain STIG controls can be satisfied as a side effect of broader system configuration changes.
 
 ### 5) Account Lockout Policy
 - **WN11-AC-000005** — Account lockout duration
@@ -120,8 +143,8 @@ Some later groups from the broader roadmap were intentionally not completed here
 |---|---|---|
 | Secondary Logon | WN11-00-000175 | Service hardening |
 | Lock Screen | WN11-CC-000005, WN11-CC-000010 | Included a FAILED → WARNING → PASSED progression |
-| Windows Firewall | WN11-00-000135 | Technically remediated, but introduced authenticated scan side effects |
-| SMBv1 Hardening | WN11-00-000160, WN11-00-000165, WN11-00-000170 | Some status changes occurred indirectly |
+| Windows Firewall | WN11-00-000135 | Implemented; impacted authenticated scanning (audit data unavailable) |
+| SMBv1 Hardening | WN11-00-000160, WN11-00-000165, WN11-00-000170 | Resolved indirectly (no direct script) |
 | Account Lockout | WN11-AC-000005, WN11-AC-000010, WN11-AC-000015 | Grouped policy remediation |
 | Password Policy | WN11-AC-000020, WN11-AC-000030, WN11-AC-000035, WN11-AC-000040 | Grouped policy remediation |
 
@@ -184,7 +207,7 @@ windows-11-stig-remediation/
 | Scan | Focus | High-Level Outcome |
 |---|---|---|
 | Scan 1 | Baseline | Initial failed findings identified |
-| Scan 2 | Secondary Logon | Secondary Logon remediated; some SMB-related changes also observed |
+| Scan 2 | Secondary Logon | Secondary Logon remediated; SMBv1-related STIGs also transitioned to compliant state |
 | Scan 3 | Lock Screen v1 | One lock screen setting passed; another improved to warning |
 | Scan 4 | Lock Screen v2 | Lock screen slideshow setting reached passed state |
 | Scan 5 | Account Lockout | Account lockout policy findings remediated |
@@ -213,6 +236,9 @@ A few findings changed status even when they were not directly targeted, likely 
 - related control interactions
 - scanner re-evaluation behavior
 
+### 5) Some STIGs can be satisfied indirectly
+SMBv1-related findings transitioned to compliant status without direct remediation, demonstrating how certain controls depend on broader system state rather than isolated configuration changes.
+
 This is part of what made the project valuable as a real-world hardening exercise.
 
 ---
@@ -220,15 +246,33 @@ This is part of what made the project valuable as a real-world hardening exercis
 ## Known Issue
 
 ### Windows Firewall STIG
-After enabling Windows Firewall for the related STIG:
 
-- the scan still completed successfully
-- however, the **Audits / Compliance** tab disappeared in Tenable
-- scan duration dropped significantly
+After enabling Windows Firewall:
 
-This suggests authenticated compliance checks were likely impacted by firewall-related management traffic restrictions. The remediation itself was technically valid, but additional tuning would be needed to preserve authenticated scanning behavior in the lab.
+- Scan execution still succeeded
+- However, the **Audits / Compliance tab disappeared**
+- Scan duration dropped significantly (~6 minutes)
 
-This issue was intentionally documented and deferred rather than hidden.
+### Analysis
+
+This behavior suggests:
+
+- Authenticated scanning did not fully execute
+- Likely due to firewall restrictions affecting:
+  - SMB / RPC / WMI communication
+  - Credential-based compliance checks
+
+### Conclusion
+
+- The STIG remediation is **technically correct**
+- The issue lies in **scanner communication constraints**
+- Additional rule tuning would be required in a real environment
+
+### Status
+
+- Control implemented
+- Behavior documented
+- Further tuning deferred
 
 ---
 
@@ -240,6 +284,10 @@ Recommended evidence categories for this repository:
 - Apply output
 - Verify output
 - before/after service state
+
+### Windows Firewall
+- PowerShell script (Apply output)
+- No compliance screenshots due to audit visibility issue
 
 ### Lock Screen Hardening
 - `WN11-CC-000010` failed screenshot
