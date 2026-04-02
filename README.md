@@ -333,12 +333,19 @@ The system was rolled back to its original state (firewall disabled) to:
 
 ## Evidence
 
-Recommended evidence categories for this repository:
+Evidence categories for this repository:
 
 ### Secondary Logon
-- Apply output
 - Verify output
+- Apply output
 - before/after service state
+
+### Lock Screen Hardening
+- relevant Tenable audit detail screenshots
+- script Verify / Apply output
+- `WN11-CC-000010` failed screenshot
+- `WN11-CC-000010` warning screenshot
+- `WN11-CC-000010` passed screenshot
 
 ### Windows Firewall
 - Verify mode output (baseline state)
@@ -347,23 +354,18 @@ Recommended evidence categories for this repository:
 - Firewall state verification (enabled vs disabled)
 - No compliance screenshots due to authenticated scan disruption
 
-### Lock Screen Hardening
-- `WN11-CC-000010` failed screenshot
-- `WN11-CC-000010` warning screenshot
-- `WN11-CC-000010` passed screenshot
-
 ### Account Lockout Policy
 - relevant Tenable audit detail screenshots
-- script Apply / Verify output
+- script Verify / Apply output
 
 ### Password Policy
 - relevant Tenable audit detail screenshots
-- script Apply / Verify output
+- script Verify / Apply output
 
 Example:
 
-![Secondary Logon Apply](evidence/secondary-logon/secondary-logon-apply.png)
 ![Secondary Logon Verify](evidence/secondary-logon/secondary-logon-verify.png)
+![Secondary Logon Apply](evidence/secondary-logon/secondary-logon-apply.png)
 
 ---
 
