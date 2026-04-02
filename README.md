@@ -114,13 +114,14 @@ The remediation itself is technically valid, but requires additional tuning to p
 ### 4) SMBv1 Hardening (Indirect Remediation)
 - **WN11-00-000160** — SMBv1 must be disabled on the system
 - **WN11-00-000165** — SMBv1 must be disabled on the SMB server
-- **WN11-00-000170** — SMBv1 must be disabled on the SMB client
+- **WN11-00-000170** — SMBv1 must be disabled on the SMB client *(already compliant in baseline)*
 
 These STIGs were not directly remediated with a dedicated script.
 
-They transitioned to a compliant state **indirectly** after the remediation of:
-
-- **WN11-00-000175 (Secondary Logon Service)**
+- **WN11-00-000170** was already compliant in the baseline scan  
+- The remaining SMBv1-related findings transitioned to compliant state **indirectly** after the remediation of:
+  
+  - **WN11-00-000175 (Secondary Logon Service)**
 
 This behavior highlights how certain STIG controls can be satisfied as a side effect of broader system configuration changes.
 
@@ -144,7 +145,7 @@ This behavior highlights how certain STIG controls can be satisfied as a side ef
 | Secondary Logon | WN11-00-000175 | Service hardening |
 | Lock Screen | WN11-CC-000005, WN11-CC-000010 | Included a FAILED → WARNING → PASSED progression |
 | Windows Firewall | WN11-00-000135 | Implemented; impacted authenticated scanning (audit data unavailable) |
-| SMBv1 Hardening | WN11-00-000160, WN11-00-000165, WN11-00-000170 | Resolved indirectly (no direct script) |
+| SMBv1 Hardening | WN11-00-000160, WN11-00-000165, WN11-00-000170 | Partially baseline-compliant; remaining findings resolved indirectly |
 | Account Lockout | WN11-AC-000005, WN11-AC-000010, WN11-AC-000015 | Grouped policy remediation |
 | Password Policy | WN11-AC-000020, WN11-AC-000030, WN11-AC-000035, WN11-AC-000040 | Grouped policy remediation |
 
@@ -183,7 +184,6 @@ windows-11-stig-remediation/
 │   ├── Invoke-STIG-SecondaryLogon.ps1
 │   ├── Invoke-STIG-LockScreenHardening.ps1
 │   ├── Invoke-STIG-WindowsFirewall.ps1
-│   ├── Invoke-STIG-SMBv1Hardening.ps1
 │   ├── Invoke-STIG-AccountLockout.ps1
 │   └── Invoke-STIG-PasswordPolicy.ps1
 │
@@ -264,7 +264,7 @@ This behavior suggests:
 
 ### Conclusion
 
-- The STIG remediation is **technically correct**
+- The STIG remediation is **technically correct** and **successfully applied**
 - The issue lies in **scanner communication constraints**
 - Additional rule tuning would be required in a real environment
 
@@ -302,8 +302,6 @@ Recommended evidence categories for this repository:
 - relevant Tenable audit detail screenshots
 - script Apply / Verify output
 
-You can place those under the `evidence/` folders and reference them here with standard Markdown image links once uploaded.
-
 Example:
 
 ![Secondary Logon Apply](evidence/secondary-logon/secondary-logon-apply.png)
@@ -328,7 +326,6 @@ Current script set:
 - `Invoke-STIG-SecondaryLogon.ps1`
 - `Invoke-STIG-LockScreenHardening.ps1`
 - `Invoke-STIG-WindowsFirewall.ps1`
-- `Invoke-STIG-SMBv1Hardening.ps1`
 - `Invoke-STIG-AccountLockout.ps1`
 - `Invoke-STIG-PasswordPolicy.ps1`
 
