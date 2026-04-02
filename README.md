@@ -1,4 +1,4 @@
-<h1 align="center">🛡️ Windows 11 STIG Remediation Lab</h1>
+<h1 align="center">Windows 11 STIG Remediation Lab</h1>
 
 <p align="center">
   DISA STIG implementation, PowerShell automation, and Tenable-based validation on Windows 11
