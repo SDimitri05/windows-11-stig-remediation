@@ -45,9 +45,9 @@ Each scan reflects incremental improvements based on targeted remediation effort
 
 ### Additional Observations
 
-- **WN11-00-000160** was in a *Warning* state during baseline and later validated through policy enforcement
-- **SMBv1-related STIGs** were resolved indirectly through system configuration changes
-- **Windows Firewall STIG** was implemented but rolled back due to operational impact
+- **WN11-00-000160** was in a *Warning* state during baseline and later transitioned to compliant state
+- **SMBv1-related STIGs** were resolved indirectly through broader system changes
+- **Windows Firewall STIG** was implemented, tested, investigated, and rolled back due to operational impact
 
 ---
 
@@ -56,37 +56,149 @@ Each scan reflects incremental improvements based on targeted remediation effort
 ### 1. Secondary Logon Service
 
 - Disabled insecure service (`seclogon`)
-- Validated via Tenable scan transition to compliant state
+- Validated through script execution and post-remediation scan results
+
+**Evidence:**
+
+- [WN11-00-000175 Before](../evidence/secondary-logon/wn11-00-000175-before.png)  
+  → Baseline evidence showing the Secondary Logon STIG in a non-compliant state
+
+- [WN11-00-000175 After](../evidence/secondary-logon/wn11-00-000175-after.png)  
+  → Post-remediation evidence showing the STIG transitioned to compliant state
+
+- [Secondary Logon Verify Output](../evidence/secondary-logon/secondarylogon-verify.png)  
+  → Script output confirming the current configuration before changes
+
+- [Secondary Logon Apply Output](../evidence/secondary-logon/secondarylogon-apply.png)  
+  → Script output showing the remediation being applied successfully
 
 ---
 
 ### 2. Lock Screen Hardening
 
 - Initial remediation resulted in partial compliance (*Warning*)
-- Refined configuration achieved full compliance (*Passed*)
-- Demonstrates iterative tuning approach
+- Refined remediation achieved full compliance (*Passed*)
+- Demonstrates iterative tuning and policy-backed enforcement
+
+**Evidence:**
+
+- [WN11-CC-000010 Failed](../evidence/lock-screen/wn11-cc-000010-failed.png)  
+  → Baseline evidence showing the lock screen slideshow control as failed
+
+- [WN11-CC-000010 Warning](../evidence/lock-screen/wn11-cc-000010-warning.png)  
+  → Intermediate scan result showing improvement but not full compliance
+
+- [WN11-CC-000010 Passed](../evidence/lock-screen/wn11-cc-000010-passed.png)  
+  → Final evidence showing full compliance after refined remediation
+
+- [WN11-CC-000005 Before](../evidence/lock-screen/wn11-cc-000005-before.png)  
+  → Baseline evidence for the lock screen camera-related control
+
+- [WN11-CC-000005 After](../evidence/lock-screen/wn11-cc-000005-after.png)  
+  → Post-remediation evidence showing the related control in compliant state
+
+- [Lock Screen Verify Output](../evidence/lock-screen/lockscreen-verify.png)  
+  → Script validation output confirming pre-remediation state
+
+- [Lock Screen Apply Output](../evidence/lock-screen/lockscreen-apply.png)  
+  → Script execution output showing lock screen policy remediation applied
 
 ---
 
 ### 3. Account Lockout Policy
 
 - Configured lockout threshold, duration, and reset counters
-- Remediated multiple STIGs as a grouped policy
+- Remediated multiple STIGs as a grouped policy configuration
+
+**Evidence:**
+
+- [WN11-AC-000005 Before](../evidence/account-lockout/wn11-ac-000005-before.png)  
+  → Baseline evidence for account lockout duration
+
+- [WN11-AC-000005 After](../evidence/account-lockout/wn11-ac-000005-after.png)  
+  → Post-remediation evidence for account lockout duration
+
+- [WN11-AC-000010 Before](../evidence/account-lockout/wn11-ac-000010-before.png)  
+  → Baseline evidence for failed logon attempt threshold
+
+- [WN11-AC-000010 After](../evidence/account-lockout/wn11-ac-000010-after.png)  
+  → Post-remediation evidence for failed logon attempt threshold
+
+- [WN11-AC-000015 Before](../evidence/account-lockout/wn11-ac-000015-before.png)  
+  → Baseline evidence for reset lockout counter timing
+
+- [WN11-AC-000015 After](../evidence/account-lockout/wn11-ac-000015-after.png)  
+  → Post-remediation evidence for reset lockout counter timing
+
+- [Account Lockout Verify Output](../evidence/account-lockout/accountlockout-verify.png)  
+  → Script validation output confirming grouped policy state before changes
+
+- [Account Lockout Apply Output](../evidence/account-lockout/accountlockout-apply.png)  
+  → Script execution output showing grouped account lockout remediation applied
 
 ---
 
 ### 4. Password Policy
 
-- Enforced complexity, history, and minimum length
-- Validated through final scan results
+- Enforced password history, minimum age, minimum length, and complexity
+- Validated through grouped remediation and post-remediation scan results
+
+**Evidence:**
+
+- [WN11-AC-000020 Before](../evidence/password-policy/wn11-ac-000020-before.png)  
+  → Baseline evidence for password history requirement
+
+- [WN11-AC-000020 After](../evidence/password-policy/wn11-ac-000020-after.png)  
+  → Post-remediation evidence for password history requirement
+
+- [WN11-AC-000030 Before](../evidence/password-policy/wn11-ac-000030-before.png)  
+  → Baseline evidence for minimum password age
+
+- [WN11-AC-000030 After](../evidence/password-policy/wn11-ac-000030-after.png)  
+  → Post-remediation evidence for minimum password age
+
+- [WN11-AC-000035 Before](../evidence/password-policy/wn11-ac-000035-before.png)  
+  → Baseline evidence for minimum password length
+
+- [WN11-AC-000035 After](../evidence/password-policy/wn11-ac-000035-after.png)  
+  → Post-remediation evidence for minimum password length
+
+- [WN11-AC-000040 Before](../evidence/password-policy/wn11-ac-000040-before.png)  
+  → Baseline evidence for password complexity
+
+- [WN11-AC-000040 After](../evidence/password-policy/wn11-ac-000040-after.png)  
+  → Post-remediation evidence for password complexity
+
+- [Password Policy Verify Output](../evidence/password-policy/passwordpolicy-verify.png)  
+  → Script validation output confirming grouped password policy state before changes
+
+- [Password Policy Apply Output](../evidence/password-policy/passwordpolicy-apply.png)  
+  → Script execution output showing grouped password policy remediation applied
 
 ---
 
 ### 5. SMBv1 (Indirect Remediation)
 
-- No direct script applied
-- Related STIG findings resolved through broader system hardening
-- Demonstrates dependency-based remediation behavior
+- No direct remediation script was implemented
+- Related STIG findings changed status as a result of broader system hardening
+- Demonstrates dependency-based and indirect remediation behavior
+
+**Evidence:**
+
+- [WN11-00-000160 Baseline (Warning)](../evidence/smbv1/wn11-00-000160-before.png)  
+  → Baseline scan showing this STIG in a *Warning* state
+
+- [WN11-00-000160 After](../evidence/smbv1/wn11-00-000160-after.png)  
+  → Later scan showing transition to compliant state after related remediations
+
+- [WN11-00-000165 Before](../evidence/smbv1/wn11-00-000165-before.png)  
+  → Baseline scan showing this STIG in a failed state
+
+- [WN11-00-000165 After](../evidence/smbv1/wn11-00-000165-after.png)  
+  → Later scan showing this STIG resolved without direct intervention
+
+- [WN11-00-000170 Baseline (Passed)](../evidence/smbv1/wn11-00-000170-baseline.png)  
+  → Baseline scan confirming this STIG was already compliant prior to any remediation activity
 
 ---
 
