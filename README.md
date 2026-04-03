@@ -364,8 +364,8 @@ Evidence categories for this repository:
 
 Example:
 
-![Secondary Logon Verify](evidence/secondary-logon/secondary-logon-verify.png)
-![Secondary Logon Apply](evidence/secondary-logon/secondary-logon-apply.png)
+![Secondary Logon Verify](evidence/secondary-logon/secondarylogon-verify.png)
+![Secondary Logon Apply](evidence/secondary-logon/secondarylogon-apply.png)
 
 ---
 
