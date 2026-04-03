@@ -327,5 +327,3 @@ This project demonstrates practical experience in:
 - troubleshooting real-world configuration issues
 
 It reflects a realistic security engineering process, including both successful implementations and controlled rollbacks based on observed system impact.
-
----
